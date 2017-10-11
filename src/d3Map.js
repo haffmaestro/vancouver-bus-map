@@ -1,15 +1,13 @@
 import * as d3 from "d3";
 import { tile } from "d3-tile";
-
-const pi = Math.PI,
-      tau = 2 * pi;
+import TAU from './TAU.js'
 
 var d3Map = {};
 
-d3Map.create = function(el, {center, zoom, width, height}) { 
+d3Map.create = function(el, {projection, width, height}) { 
+  console.log(width, height)
   const d3Element = d3.select(el);
-  const projection = createProjection(center, zoom, width, height)
-  const tiles = createTiles(width, height, projection);
+  const tiles = createTiles(projection, width, height);
 
   const rasterImages = d3Element.selectAll("image");
 
@@ -37,8 +35,8 @@ d3Map.create = function(el, {center, zoom, width, height}) {
   }
 
   this._projection = projection;
-  this._el = el;
-  this._state = {center, zoom, width, height};
+  this._el = d3Element;
+  this._state = {projection, width, height};
 }
 
 d3Map.update = function(update) {
@@ -52,17 +50,10 @@ d3Map.getProjection = function() {
 
 // Helpers
 
-function createProjection(center, zoom, width, height) {
-  return d3.geoMercator()
-    .scale((1 << zoom) / tau)
-    .translate([width / 2, height / 2])
-    .center(center);
-}
-
-function createTiles(width, height, projection) {
+function createTiles(projection, width, height) {
   return tile()
     .size([width, height])
-    .scale(projection.scale() * tau)
+    .scale(projection.scale() * TAU)
     .translate(projection([0, 0]))();
 }
 
