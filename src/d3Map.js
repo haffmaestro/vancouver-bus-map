@@ -2,16 +2,22 @@ import * as d3 from "d3";
 import { tile } from "d3-tile";
 import TAU from './TAU.js'
 
-var d3Map = {};
-
-d3Map.create = function(el, {projection, width, height}) { 
-  console.log(width, height)
+function createMap(el, props) {
   const d3Element = d3.select(el);
-  const tiles = createTiles(projection, width, height);
+  const tiles = createTiles(props.projection, props.width, props.height);
 
-  const rasterImages = d3Element.selectAll("image");
+  let imageContainer = d3Element.select("g.image-container");
 
-  setSize(d3Element, {width, height});
+  if(!imageContainer.size()) {
+    d3Element.insert('g')
+             .attr('class', 'image-container');
+
+    imageContainer = d3Element.select("g.image-container");
+  }
+
+  const rasterImages = imageContainer.selectAll("image");
+
+  setSize(d3Element, props);
 
   rasterImages
     .data(tiles, (d) => d)
@@ -34,18 +40,10 @@ d3Map.create = function(el, {projection, width, height}) {
     return (y + tiles.translate[1]) * tiles.scale;
   }
 
-  this._projection = projection;
-  this._el = d3Element;
-  this._state = {projection, width, height};
-}
-
-d3Map.update = function(update) {
-  let updatedState = Object.assign(this._state, update);
-  this.create(this._el, updatedState);
-}
-
-d3Map.getProjection = function() {
-  return this._projection;
+  return function updateMap(update) {
+    let updatedProps = Object.assign(props, update);
+    return createMap(el, updatedProps);
+  }
 }
 
 // Helpers
@@ -66,4 +64,4 @@ function setSize(element, {width, height}) {
   element.attr("height", height);
 }
 
-export default d3Map;
+export default createMap

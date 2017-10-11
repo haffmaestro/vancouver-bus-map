@@ -1,35 +1,25 @@
 import React, { Component } from 'react';
 import createProjection from './d3MapProjection';
-import d3Map from './d3Map';
+import createMap from './d3Map';
 import createVectorLayer from './d3MapLayer';
 
 class TileMap extends Component {
 
-  constructor(props) {
-    super(props);
-    
-  }
-
   componentDidMount() {
     let props = this.props;
     const center = [props.longitude, props.latitude],
-          {zoom, mapLayer} = props,
+          {zoom, mapLayer, width, height} = props,
           el = this.el;
-    var   {width, height} = this.props;
-
-    if(!width || !height) {
-      ({ width, height } = fillParent(el));
-    }
 
     const projection = createProjection(center, zoom, width, height);
 
-    d3Map.create(el, {projection, width, height});
+    let updateMap = createMap(el, {projection, width, height});
     
     let plotMapLayer = createVectorLayer(el, projection);
     plotMapLayer(mapLayer)
 
     this.plotMapLayer = plotMapLayer;
-    this.map = d3Map;
+    this.updateMap = updateMap;
   }
 
   componentDidUpdate(prevProps) {
@@ -48,18 +38,15 @@ class TileMap extends Component {
             height = props.height;
 
       projection = createProjection(center, zoom, width, height);
-      this.setState({projection});
+      this.updateMap({projection, width, height})
     } 
 
     if((props.mapLayer !== prevProps.mapLayer) || projection) {
-      this.updateD3Models({projection}, {mapLayer: props.mapLayer});
+      let mapLayer = props.mapLayer;
+      projection ? this.plotMapLayer(mapLayer, projection)
+                 : this.plotMapLayer(mapLayer);
     }
 
-  }
-
-  updateD3Models({ projection }, { width, height, mapLayer }) {
-    this.map.update({projection, width, height})
-    this.plotMapLayer(mapLayer)
   }
 
   render() {
@@ -67,11 +54,6 @@ class TileMap extends Component {
       <svg ref={el => this.el = el}></svg>
     );
   }
-}
-
-function fillParent(element) {
-  var parent = element.parentNode;
-  return parent.getBoundingClientRect();
 }
 
 export default TileMap;
