@@ -1,5 +1,9 @@
 import request from 'superagent';
 
+/**
+ * This function gets buses and casts them to GeoJSON.
+ * @return {[type]} [description]
+ */
 function getBuses() {
   const apiEndpoint = "https://api.18257440082045.stackery-stacks.io/buses";
 

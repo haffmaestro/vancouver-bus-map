@@ -3,6 +3,13 @@ import createProjection from './d3MapProjection';
 import createMap from './d3Map';
 import createVectorLayer from './d3MapLayer';
 
+/**
+ * This Class is meant to be the only interaction point between
+ * d3 and React.
+ *
+ * Because d3 actually changes the DOM itself, this component acts as a translator
+ * between the two, and is why the `render` function does very little here. 
+ */
 class TileMap extends Component {
 
   componentDidMount() {
@@ -14,11 +21,9 @@ class TileMap extends Component {
     const projection = createProjection(center, zoom, width, height);
 
     let updateMap = createMap(el, {projection, width, height});
-    
-    let plotMapLayer = createVectorLayer(el, projection);
-    plotMapLayer(mapLayer)
+    let updateMapLayer = createVectorLayer(el, {projection, geoPoints: mapLayer});
 
-    this.plotMapLayer = plotMapLayer;
+    this.updateMapLayer = updateMapLayer;
     this.updateMap = updateMap;
   }
 
@@ -38,13 +43,16 @@ class TileMap extends Component {
             height = props.height;
 
       projection = createProjection(center, zoom, width, height);
-      this.updateMap({projection, width, height})
+      let updateFunc = this.updateMap({projection, width, height});
+
+      this.updateMap = updateFunc;
     } 
 
     if((props.mapLayer !== prevProps.mapLayer) || projection) {
-      let mapLayer = props.mapLayer;
-      projection ? this.plotMapLayer(mapLayer, projection)
-                 : this.plotMapLayer(mapLayer);
+      let updateFunc = projection ? this.updateMapLayer({geoPoints: props.mapLayer, projection})
+                                  : this.updateMapLayer({geoPoints: props.mapLayer});
+      
+      this.updateMapLayer = updateFunc;
     }
 
   }

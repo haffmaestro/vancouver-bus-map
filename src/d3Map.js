@@ -2,12 +2,25 @@ import * as d3 from "d3";
 import { tile } from "d3-tile";
 import TAU from './TAU.js'
 
+/**
+ * This function is responsible for creating the raster map and attaching it to the right
+ * element on the page.
+ * 
+ * @param  { HTML Element } el    the root to attach the images to
+ * @param  {{projection, width, height}} updatedProps this describes how the map should be assembled
+ * @return { Function }       the method used to update the map
+ */
 function createMap(el, props) {
   const d3Element = d3.select(el);
   const tiles = createTiles(props.projection, props.width, props.height);
 
   let imageContainer = d3Element.select("g.image-container");
 
+  /**
+   * if there is no container yet, we must make one
+   * since we are not using .data for attaching d3 data to this element
+   * we cant use .enter/.exit semantics
+   */
   if(!imageContainer.size()) {
     d3Element.insert('g')
              .attr('class', 'image-container');
@@ -35,7 +48,7 @@ function createMap(el, props) {
   function getXCoordinate({x}) {
     return (x + tiles.translate[0]) * tiles.scale;
   }
-
+  
   function getYCoordinate({y}) {
     return (y + tiles.translate[1]) * tiles.scale;
   }
