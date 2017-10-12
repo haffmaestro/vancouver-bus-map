@@ -1,4 +1,4 @@
-## Guide to this project
+## README
 
 <img width="1280" alt="screen shot 2017-10-12 at 09 31 15" src="https://user-images.githubusercontent.com/5842360/31507628-28096078-af30-11e7-883f-284b4c9552c6.png">
 
@@ -14,12 +14,19 @@ Because the translink api does not allow CORS, I've deployed a function on AWS u
 The entirety of the BE code can be found [here](http://www.openstreetmap.org/)
 
 ### To Run
-`$ git clone git@github.com:haffmaestro/vancouver-bus-map.git`
-`$ npm install`
-`$ npm start`
+`$ git clone git@github.com:haffmaestro/vancouver-bus-map.git`  
+`$ npm install`  
+`$ npm start`  
 
 ### Controls
 This is not a slippy map like Google Maps where you can drag stuff around and move the viewport. However, by using native zoom in your browser you can get a bigger or smaller view of the map.
+
+**Zoomed out**
+<img width="1280" alt="screen shot 2017-10-12 at 11 03 59" src="https://user-images.githubusercontent.com/5842360/31511826-c45e767c-af3d-11e7-8759-947ea0a0beef.png">
+
+**Zoomed too far in**
+![image](https://user-images.githubusercontent.com/5842360/31511894-020af126-af3e-11e7-9841-e57a5109f56c.png)
+
 
 ### Q's
 Why is there no Redux?
