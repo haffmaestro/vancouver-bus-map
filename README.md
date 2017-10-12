@@ -34,5 +34,13 @@ Why is there no Redux?
 > In fact, using React is completely unnecessary as this whole thing could be achieved in about 90 lines of code plus d3. See an example of that [here](http://bl.ocks.org/haffmaestro/97c268712e040f762a8db99930651d26)
 
 ### Things that are not completely great
-> The BE function actually allows anyone to query it, it essentially takes the Translink API endpoints for buses and makes it completely open.
+> The BE function actually allows anyone to query it, it essentially takes the Translink API endpoints for buses and makes it completely open.  
 > Who would it affect? Me. Because every request goes through my AWS account I will have to monitor it to see that it does not get misused/discovered.
+
+> Because I'm directly querying OSM for street tiles and you're not really meant to do that, the tiles sometimes fail to load and you'll get a white square instead. To solve this, you'd host your own OSM instances or use another mapping library like Mapbox or Google Maps.
+
+> Functions that run on demand are much slower than having a dedicated server. The response time for the function deployed on AWS is averages around 1s. If this map was to be used in a functional way this would be way to slow. However for these display purposes it's only the first request that makes the app seem slow.  
+> But it does mean that the costs are basically negligible.  
+> And that I can deploy a functional BE with 30 lines of code.
+
+More information on deploying serverless can be found [here](https://serverless.com/);
